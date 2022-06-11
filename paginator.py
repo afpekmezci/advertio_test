@@ -64,5 +64,5 @@ def paginate(current_page: int, total_pages: int, *args, **kwargs):
 	if total_pages - boundaries > current_page + around:
 		displayed_pages.insert(len(displayed_pages) - boundaries, combiner)
 	displayed_text = ' '.join(list(map(str, displayed_pages)))
-	print(displayed_text, end='\n \n')
+	print(displayed_text)
 	return displayed_text
