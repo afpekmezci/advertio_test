@@ -73,11 +73,3 @@ def paginate(current_page: int, total_pages: int, boundaries: int = 1, around: i
 	displayed_text = ' '.join(list(map(str, displayed_pages)))
 	print(displayed_text)
 	return displayed_text
-
-
-
-paginate(current_page=7, total_pages=10, boundaries=3, around=0)
-paginate(current_page=10, total_pages=10, boundaries=1, around=0)
-paginate(current_page=1, total_pages=10, boundaries=1, around=0)
-
-paginate(current_page=2, total_pages=5, boundaries=1, around=0)
