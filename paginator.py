@@ -47,7 +47,7 @@ def paginate(current_page: int, total_pages: int, boundaries: int = 1, around: i
 		displayed_pages.add(i + 1)
 		displayed_pages.add(total_pages - i)
 		i += 1
-
+	
 	k = 0
 	while k < around:
 		displayed_pages.add(current_page - k - 1)
