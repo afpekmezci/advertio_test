@@ -10,14 +10,14 @@ class PaginationTest(unittest.TestCase):
 			paginate(current_page='a', total_pages=1)
 			self.assertEqual(
 				str(exp.exception),
-				Validator.integer_error.format(key='page')
+				Validator.integer_error.format(key='current_page')
 			)
 
 			# Test current_page zero
 			paginate(current_page=0, total_pages=1)
 			self.assertEqual(
 				str(exp.exception),
-				Validator.zero_error.format(key='page')
+				Validator.zero_error.format(key='current_page')
 			)
 
 			# Test current_page less then total_page
@@ -78,10 +78,50 @@ class PaginationTest(unittest.TestCase):
 		self.assertEqual(paginate(current_page=2, total_pages=5, boundaries=1, around=0), '1 2 ... 5')
 
 	def test_with_big_numbers(self):
-		self.assertEqual(paginate(current_page=20, total_pages=100, boundaries=3, around=3), '1 2 3 ... 17 18 19 20 21 22 23 ... 98 99 100')
+		self.assertEqual(paginate(current_page=20, total_pages=100, boundaries=3, around=3),
+		                 '1 2 3 ... 17 18 19 20 21 22 23 ... 98 99 100')
 
 	def test_first_example(self):
 		self.assertEqual(paginate(current_page=4, total_pages=5, boundaries=1, around=0), '1 ... 4 5')
 
+	def test_first_example_backward(self):
+		self.assertEqual(paginate(current_page=1, total_pages=5, boundaries=1, around=0), '1 ... 5')
+
+	def test_first_example_backward_with_page_two(self):
+		self.assertEqual(paginate(current_page=2, total_pages=5, boundaries=1, around=0), '1 2 ... 5')
+
 	def test_second_example(self):
 		self.assertEqual(paginate(current_page=4, total_pages=10, boundaries=2, around=2), '1 2 3 4 5 6 ... 9 10')
+
+	def test_third_example(self):
+		self.assertEqual(paginate(current_page=1, total_pages=10, boundaries=6, around=1), '1 2 3 4 5 6 7 8 9 10')
+
+	def test_third_example_backward(self):
+		self.assertEqual(paginate(current_page=10, total_pages=10, boundaries=6, around=1), '1 2 3 4 5 6 7 8 9 10')
+
+	def test_third_example_backward_with_page_tree(self):
+		self.assertEqual(paginate(current_page=3, total_pages=10, boundaries=6, around=1), '1 2 3 4 5 6 7 8 9 10')
+
+	def test_third_example_backward_with_page_tree_smaller_boundaries(self):
+		self.assertEqual(paginate(current_page=3, total_pages=10, boundaries=3, around=1), '1 2 3 4 ... 8 9 10')
+
+	def test_third_example_with_center_page(self):
+		self.assertEqual(paginate(current_page=5, total_pages=10, boundaries=3, around=1), '1 2 3 4 5 6 ... 8 9 10')
+
+	def test_third_example_with_center_page_backward(self):
+		self.assertEqual(paginate(current_page=6, total_pages=10, boundaries=3, around=1), '1 2 3 ... 5 6 7 8 9 10')
+
+	def test_third_example_without_around(self):
+		self.assertEqual(paginate(current_page=6, total_pages=10, boundaries=3, around=0), '1 2 3 ... 6 ... 8 9 10')
+
+	def test_third_example_without_around_and_right_combiner(self):
+		self.assertEqual(paginate(current_page=7, total_pages=10, boundaries=3, around=0), '1 2 3 ... 7 8 9 10')
+
+	def test_forth_example(self):
+		self.assertEqual(paginate(current_page=5, total_pages=10, boundaries=0, around=1), '... 4 5 6 ...')
+
+	def test_first_page(self):
+		self.assertEqual(paginate(current_page=1, total_pages=10, boundaries=1, around=0), '1 ... 10')
+
+	def test_last_page(self):
+		self.assertEqual(paginate(current_page=10, total_pages=10, boundaries=1, around=0), '1 ... 10')
