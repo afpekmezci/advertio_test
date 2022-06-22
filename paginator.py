@@ -35,11 +35,7 @@ def validate(current_page: int, total_pages: int, boundaries: int, around: int):
 	validator.validate_page(current_page, total_pages)
 
 
-def paginate(current_page: int, total_pages: int, boundaries: int = 1, around: int = 0):
-	validate(current_page, total_pages, boundaries, around)
-
-	combiner = '...'
-
+def generate_displayed_pages_list(current_page: int, total_pages: int, boundaries: int = 1, around: int = 0):
 	boundaries_set = set([x for i in range(0, boundaries) for x in (i + 1, total_pages - i)])
 	around_set = set([x for k in range(0, around) for x in (current_page - k - 1, current_page + k + 1)])
 
@@ -48,6 +44,11 @@ def paginate(current_page: int, total_pages: int, boundaries: int = 1, around: i
 	displayed_pages = list(displayed_pages)
 	displayed_pages = sorted(displayed_pages)
 	displayed_pages = list(filter(lambda x: 0 < x <= total_pages, displayed_pages))
+	return displayed_pages
+
+
+def add_combiner(displayed_pages: list, current_page: int, total_pages: int, boundaries: int = 1, around: int = 0):
+	combiner = '...'
 
 	boundaries_right_min = total_pages - boundaries + 1
 	boundaries_left_max = boundaries
@@ -61,7 +62,14 @@ def paginate(current_page: int, total_pages: int, boundaries: int = 1, around: i
 	if boundaries_right_min - 1 > around_max and boundaries_right_min > boundaries + 1:
 		displayed_pages.insert(len(displayed_pages) - boundaries, combiner)
 
+	return displayed_pages
+
+
+def paginate(current_page: int, total_pages: int, boundaries: int = 1, around: int = 0):
+	validate(current_page, total_pages, boundaries, around)
+	displayed_pages = generate_displayed_pages_list(current_page, total_pages, boundaries, around)
+	displayed_pages = add_combiner(displayed_pages, current_page, total_pages, boundaries, around)
 	displayed_text = ' '.join(list(map(str, displayed_pages)))
+
 	print(displayed_text)
 	return displayed_text
-
