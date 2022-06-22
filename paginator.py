@@ -1,8 +1,8 @@
 class Validator:
 	required_error = "{key} is required."
-	integer_error = "{key} shoud be an integer."
+	integer_error = "{key} shoud be a positive integer."
 	zero_error = "{key} should be bigger than 0."
-	page_error = "current_page should be smaller than total_pages"
+	page_error = "current_page should be smaller than total_pages."
 
 	def validate_num(self, key, value):
 		if value is None:
@@ -39,37 +39,29 @@ def paginate(current_page: int, total_pages: int, boundaries: int = 1, around: i
 	validate(current_page, total_pages, boundaries, around)
 
 	combiner = '...'
-	displayed_pages = set()
-	displayed_pages.add(current_page)
 
-	i = 0
-	while i < boundaries:
-		displayed_pages.add(i + 1)
-		displayed_pages.add(total_pages - i)
-		i += 1
-	
-	k = 0
-	while k < around:
-		displayed_pages.add(current_page - k - 1)
-		displayed_pages.add(current_page + k + 1)
-		k += 1
+	boundaries_set = set([x for i in range(0, boundaries) for x in (i + 1, total_pages - i)])
+	around_set = set([x for k in range(0, around) for x in (current_page - k - 1, current_page + k + 1)])
+
+	displayed_pages = boundaries_set | around_set | {current_page}
 
 	displayed_pages = list(displayed_pages)
 	displayed_pages = sorted(displayed_pages)
 	displayed_pages = list(filter(lambda x: 0 < x <= total_pages, displayed_pages))
 
-	right_min = total_pages - boundaries + 1
-	left_max = boundaries
+	boundaries_right_min = total_pages - boundaries + 1
+	boundaries_left_max = boundaries
 
-	middle_min = current_page - around
-	middle_max = current_page + around
-	
-	if left_max + 1 < middle_min and left_max + 1 < right_min:
+	around_min = current_page - around
+	around_max = current_page + around
+
+	if boundaries_left_max + 1 < around_min and boundaries_left_max + 1 < boundaries_right_min:
 		displayed_pages.insert(boundaries, combiner)
 
-	if right_min - 1 > current_page + around and right_min > boundaries:
+	if boundaries_right_min - 1 > around_max and boundaries_right_min > boundaries + 1:
 		displayed_pages.insert(len(displayed_pages) - boundaries, combiner)
 
 	displayed_text = ' '.join(list(map(str, displayed_pages)))
 	print(displayed_text)
 	return displayed_text
+
