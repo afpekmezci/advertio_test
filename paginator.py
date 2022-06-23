@@ -36,8 +36,8 @@ def validate(current_page: int, total_pages: int, boundaries: int, around: int):
 
 
 def generate_displayed_pages_list(current_page: int, total_pages: int, boundaries: int = 1, around: int = 0):
-	boundaries_set = set([x for i in range(0, boundaries) for x in (i + 1, total_pages - i)])
-	around_set = set([x for k in range(0, around) for x in (current_page - k - 1, current_page + k + 1)])
+	boundaries_set = {x for i in range(0, boundaries) for x in (i + 1, total_pages - i)}
+	around_set = {x for k in range(0, around) for x in (current_page - k - 1, current_page + k + 1)}
 
 	displayed_pages = boundaries_set | around_set | {current_page}
 
